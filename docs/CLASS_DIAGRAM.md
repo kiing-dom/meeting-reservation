@@ -10,7 +10,8 @@
 #### Methods:
 - `addAvailability(slot: LocalDateTime)`  
 - `removeAvailability(slot: LocalDateTime)`  
-- `getAvailability(): List<LocalDateTime>` 
+- `getAvailability(): List<LocalDateTime>`
+- `isAvailable(): boolean` 
 
 ---
 
