@@ -44,4 +44,8 @@ public class User {
 
         availableSlots.remove(slot);
     }
+
+    public boolean isAvailable(LocalDateTime slot) {
+        return availableSlots.contains(slot);
+    }
 }
