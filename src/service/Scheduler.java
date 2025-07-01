@@ -47,4 +47,22 @@ public class Scheduler {
         System.out.println("Meeting created successfully");
         return true;
     }
+
+    public boolean cancelMeeting(String meetingId) {
+        Iterator<Meeting> iterator = meetings.iterator();
+
+        while (iterator.hasNext()) {
+            Meeting meeting = iterator.next();
+            if (meeting.getId().equals(meetingId)) {
+                meeting.getHost().addAvailability(meeting.getStartTime());
+                meeting.getGuest().addAvailability(meeting.getStartTime());
+                iterator.remove();
+                System.out.println("Meeting cancelled.");
+                return true;
+            }
+        }
+
+        System.out.println("Meeing not found!");
+        return false;
+    }
 }
