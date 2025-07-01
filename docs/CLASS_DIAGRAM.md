@@ -33,7 +33,7 @@
 
 #### Methods:
 - `registerUser(User user)`
-- `scheduleMeeting(String hostId, String guestId, LocalDateTime startTime, LocalDateTime, endTime): boolean`
+- `scheduleMeeting(String hostId, String guestId, LocalDateTime startTime, LocalDateTime endTime): boolean`
 - `cancelMeeting(String meetingId): boolean`
 - `listUserMeetings(String userId): List<Meeting>`
 - `getAvailableSlots(String userId): List<LocalDateTime>`
