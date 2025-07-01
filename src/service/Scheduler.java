@@ -65,4 +65,20 @@ public class Scheduler {
         System.out.println("Meeing not found!");
         return false;
     }
+
+    public List<Meeting> listUserMeetings(String userId) throws IllegalArgumentException{
+        if (userId == null || userId.isEmpty() || !users.containsKey(userId)) {
+            throw new IllegalArgumentException("Invalid input");
+        }
+
+        List<Meeting> userMeetings = new ArrayList<>();
+        User user = users.get(userId);
+        for (Meeting meeting : meetings) {
+            if (meeting.getHost().equals(user) || meeting.getGuest().equals(user)) {
+                userMeetings.add(meeting);
+            }
+        }
+
+        return userMeetings;
+    }
 }
