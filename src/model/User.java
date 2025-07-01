@@ -48,4 +48,6 @@ public class User {
     public boolean isAvailable(LocalDateTime slot) {
         return availableSlots.contains(slot);
     }
+
+    // TODO: override equals and hashcode to prioritise userId
 }

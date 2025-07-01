@@ -68,7 +68,7 @@ public class Scheduler {
 
     public List<Meeting> listUserMeetings(String userId) throws IllegalArgumentException{
         if (userId == null || userId.isEmpty() || !users.containsKey(userId)) {
-            throw new IllegalArgumentException("Invalid input");
+            throw new IllegalArgumentException("Invalid user ID: " + userId);
         }
 
         List<Meeting> userMeetings = new ArrayList<>();
@@ -80,5 +80,15 @@ public class Scheduler {
         }
 
         return userMeetings;
+    }
+
+    public List<LocalDateTime> getAvailableSlots(String userId) {
+        User user = users.get(userId);
+
+        if (user != null) {
+            return user.getAvailableSlots();
+        }
+
+        return new ArrayList<>();
     }
 }
