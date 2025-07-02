@@ -91,4 +91,12 @@ public class Scheduler {
 
         return new ArrayList<>();
     }
+
+    public User getUserById(String userId) throws IllegalArgumentException {
+        if (!users.containsKey(userId)) {
+            throw new IllegalArgumentException("No user ID that matches" + userId);
+        }
+
+        return users.get(userId);
+    }
 }

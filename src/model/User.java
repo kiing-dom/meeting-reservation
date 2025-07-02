@@ -3,6 +3,7 @@ package model;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class User {
     private final String id;
@@ -10,8 +11,8 @@ public class User {
     private final String email;
     private List<LocalDateTime> availableSlots;
 
-    public User(String id, String name, String email) {
-        this.id = id;
+    public User(String name, String email) {
+        this.id = UUID.randomUUID().toString();
         this.name = name;
         this.email = email;
         this.availableSlots = new ArrayList<>();
