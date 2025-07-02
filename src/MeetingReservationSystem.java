@@ -1,6 +1,6 @@
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Scanner;
+import java.util.*;
 
 import model.User;
 import service.Scheduler;
@@ -89,16 +89,33 @@ public class MeetingReservationSystem {
             LocalDateTime endTime = LocalDateTime.parse(endTimeStr, formatter);
 
             scheduler.scheduleMeeting(hostId, guestId, startTime, endTime);
+            System.out.println("Scheduled meeting succesfully!");
         } catch (Exception e) {
             System.out.println("Invalid date format: " + e.getMessage());
         }
     }
 
     private static void cancelMeeting() {
+        System.out.println("Enter the meeting id: ");
+        String meetingId = scanner.nextLine();
 
+        scheduler.cancelMeeting(meetingId);
     }
 
     private static void listUserMeetings() {
+        System.out.println("Enter user ID: ");
+        String userId = scanner.nextLine();
 
+        try {
+            List<?> meetings = scheduler.listUserMeetings(userId);
+            if (meetings.isEmpty()) {
+                System.out.println("No meetings found!");
+            } else {
+                System.out.println("Meetings:");
+                meetings.forEach(System.out::println);
+            }
+        } catch (IllegalArgumentException e) {
+            System.out.println(e.getMessage());
+        }
     }
 }
