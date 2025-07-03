@@ -3,6 +3,9 @@ package service;
 import model.Meeting;
 import model.User;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -99,4 +102,32 @@ public class Scheduler {
 
         return users.get(userId);
     }
+
+    public void saveUsersToFile(String fileName) throws IOException {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName))) {
+            for (User user : users.values()) {
+                StringBuilder sb = new StringBuilder();
+                sb.append(user.getId()).append(",");
+                sb.append(user.getName()).append(",");
+                sb.append(user.getEmail()).append(",");
+
+                List<LocalDateTime> availability = user.getAvailableSlots();
+                for (int i = 0; i < availability.size(); i++) {
+                    sb.append(availability.get(i));
+                    if (i < availability.size() - 1) {
+                        sb.append(",");
+                    }
+                }
+
+                writer.write(sb.toString());
+                writer.newLine();
+            }
+
+            System.out.println("Users saved successfully!");
+        } catch (IOException e) {
+            System.out.println("Error saving users: " + e.getMessage());
+        }
+    }
+
+    
 }
