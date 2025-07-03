@@ -3,7 +3,9 @@ package service;
 import model.Meeting;
 import model.User;
 
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -129,5 +131,28 @@ public class Scheduler {
         }
     }
 
-    
+    public void loadUsersFromFile(String fileName) throws IOException {
+        try (BufferedReader reader = new BufferedReader(new FileReader(fileName))) {
+            String line;
+
+            while ((line = reader.readLine()) != null) {
+                String[] parts = line.split(",", 4);
+                if (parts.length >= 3) {
+                    User user = new User(parts[0], parts[1], parts[2]);
+                    if (parts.length == 4 && !parts[3].isEmpty()) {
+                        String[] slots = parts[3].split(";");
+                        for (String slot : slots) {
+                            user.addAvailability(LocalDateTime.parse(slot));
+                        }
+                    }
+
+                    users.put(user.getId(), user);
+                }
+            }
+
+            System.out.println("Users loaded successfully!");
+        } catch (IOException e) {
+            System.out.println("Error loading users: " + e.getMessage());
+        }
+    }    
 }
