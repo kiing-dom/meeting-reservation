@@ -57,5 +57,10 @@ public class User {
         return availableSlots.contains(slot);
     }
 
+    @Override
+    public String toString() {
+        return "User{id='" + id + "', name='" + name +"', email='" + email + "', availability='" + availableSlots + "'}";
+    }
+
     // TODO: override equals and hashcode to prioritise userId
 }
