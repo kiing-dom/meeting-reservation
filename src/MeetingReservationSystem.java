@@ -10,10 +10,12 @@ public class MeetingReservationSystem {
     private static final Scheduler scheduler = new Scheduler();
     private static final Scanner scanner = new Scanner(System.in);
     private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+    private static final String USERS_PATH = "src/db/users.csv";
+    private static final String MEETINGS_PATH = "src/db/meetings.csv";
 
     public static void main(String[] args) {
-        scheduler.loadUsersFromFile("db/users.csv");
-        scheduler.loadMeetingsFromFile("db/meetings.csv");
+        scheduler.loadUsersFromFile(USERS_PATH);
+        scheduler.loadMeetingsFromFile(MEETINGS_PATH);
         boolean running = true;
 
         while (running) {
@@ -53,7 +55,7 @@ public class MeetingReservationSystem {
 
         User user = new User(name, email);
         scheduler.registerUser(user);
-        scheduler.saveUsersToFile("db/users.csv");
+        scheduler.saveUsersToFile(USERS_PATH);
         System.out.println("User " + user.getName() + " registered successfully! User ID: " + user.getId());
     }
 
@@ -68,7 +70,7 @@ public class MeetingReservationSystem {
             User user = scheduler.getUserById(userId);
             if (user != null) {
                 user.addAvailability(slot);
-                scheduler.saveUsersToFile("db/users.csv");
+                scheduler.saveUsersToFile(USERS_PATH);
                 System.out.println("Availability added!");
             } else {
                 System.out.println("User not found");
@@ -93,7 +95,7 @@ public class MeetingReservationSystem {
             LocalDateTime endTime = LocalDateTime.parse(endTimeStr, formatter);
 
             scheduler.scheduleMeeting(hostId, guestId, startTime, endTime);
-            scheduler.saveMeetingsToFile("db/meetings.csv");
+            scheduler.saveMeetingsToFile(MEETINGS_PATH);
             System.out.println("Scheduled meeting succesfully!");
         } catch (Exception e) {
             System.out.println("Invalid date format: " + e.getMessage());
@@ -105,7 +107,7 @@ public class MeetingReservationSystem {
         String meetingId = scanner.nextLine();
 
         scheduler.cancelMeeting(meetingId);
-        scheduler.saveMeetingsToFile("db/meetings.csv");
+        scheduler.saveMeetingsToFile(MEETINGS_PATH);
     }
 
     private static void listUserMeetings() {
