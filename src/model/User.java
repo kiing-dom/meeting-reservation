@@ -11,6 +11,13 @@ public class User {
     private final String email;
     private List<LocalDateTime> availableSlots;
 
+    public User(String id, String name, String email) {
+        this.id = id;
+        this.name = name;
+        this.email = email;
+        this.availableSlots = new ArrayList<>();
+    }
+
     public User(String name, String email) {
         this.id = UUID.randomUUID().toString();
         this.name = name;
