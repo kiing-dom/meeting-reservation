@@ -39,7 +39,7 @@ public class Scheduler {
         }
 
         Meeting newMeeting = new Meeting(UUID.randomUUID().toString(), host, guest, startTime, endTime);
-        for(Meeting meeting : meetings) {
+        for (Meeting meeting : meetings) {
             if (meeting.conflictsWith(newMeeting)) {
                 System.out.println("Meeting time conflicts with existing meeting");
                 return false;
@@ -71,7 +71,7 @@ public class Scheduler {
         return false;
     }
 
-    public List<Meeting> listUserMeetings(String userId) throws IllegalArgumentException{
+    public List<Meeting> listUserMeetings(String userId) throws IllegalArgumentException {
         if (userId == null || userId.isEmpty() || !users.containsKey(userId)) {
             throw new IllegalArgumentException("Invalid user ID: " + userId);
         }
@@ -154,5 +154,45 @@ public class Scheduler {
         } catch (IOException e) {
             System.out.println("Error loading users: " + e.getMessage());
         }
-    }    
+    }
+
+    public void saveMeetingsToFile(String filename) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(filename))) {
+            for (Meeting meeting : meetings) {
+                writer.write(meeting.getId() + "," +
+                        meeting.getHost().getId() + "," +
+                        meeting.getGuest().getId() + "," +
+                        meeting.getStartTime() + "," +
+                        meeting.getEndTime());
+                writer.newLine();
+            }
+        } catch (IOException e) {
+            System.out.println("Error saving meetings: " + e.getMessage());
+        }
+    }
+
+    public void loadMeetingsFromFile(String filename) {
+        try (BufferedReader reader = new BufferedReader(new FileReader(filename))) {
+            String line;
+
+            while ((line = reader.readLine()) != null) {
+                String[] parts = line.split(",");
+                if (parts.length == 5) {
+                    String id = parts[0];
+                    User host = users.get(parts[1]);
+                    User guest = users.get(parts[2]);
+                    LocalDateTime start = LocalDateTime.parse(parts[3]);
+                    LocalDateTime end = LocalDateTime.parse(parts[4]);
+
+                    if (host != null && guest != null) {
+                        Meeting meeting = new Meeting(id, host, guest, start, end);
+                        meetings.add(meeting);
+                    }
+                }
+            }
+        } catch (IOException e) {
+            System.out.println("Error loading meetings: " + e.getMessage());
+        }
+    }
+
 }
