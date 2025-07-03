@@ -11,6 +11,8 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.*;
 
+import javax.imageio.IIOException;
+
 public class Scheduler {
     private Map<String, User> users;
     private List<Meeting> meetings;
@@ -105,7 +107,7 @@ public class Scheduler {
         return users.get(userId);
     }
 
-    public void saveUsersToFile(String fileName) throws IOException {
+    public void saveUsersToFile(String fileName) {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName))) {
             for (User user : users.values()) {
                 StringBuilder sb = new StringBuilder();
@@ -131,7 +133,7 @@ public class Scheduler {
         }
     }
 
-    public void loadUsersFromFile(String fileName) throws IOException {
+    public void loadUsersFromFile(String fileName) {
         try (BufferedReader reader = new BufferedReader(new FileReader(fileName))) {
             String line;
 
