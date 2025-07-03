@@ -40,4 +40,10 @@ public class Meeting {
     public boolean conflictsWith(Meeting other) {
         return this.startTime.isBefore(other.endTime) && other.startTime.isBefore(this.endTime);
     }
+
+    @Override
+    public String toString() {
+        return "Meeting{id='" + id + "', host=" + host.getName() + ", guest=" + guest.getName() +
+                ", start=" + startTime + ", end=" + endTime + "}";
+    }
 }
