@@ -109,6 +109,16 @@ public class Scheduler {
         return new ArrayList<>(users.values());
     }
 
+    public Meeting getMeetingById(String meetingId) {
+        for (Meeting meeting : meetings) {
+            if (meeting.getId().equals(meetingId)) {
+                return meeting;
+            }
+        }
+
+        throw new IllegalArgumentException("The meeting ID isn't valid");
+    }
+
     public void saveUsersToFile(String fileName) {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName))) {
             for (User user : users.values()) {

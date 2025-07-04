@@ -168,6 +168,12 @@ public class MeetingReservationSystem {
         System.out.println("Enter the meeting id: ");
         String meetingId = scanner.nextLine();
 
+        Meeting meetingToCancel = scheduler.getMeetingById(meetingId);
+        if (meetingToCancel == null) {
+            System.out.println("Meeting not found!");
+            return;
+        }
+
         scheduler.cancelMeeting(meetingId);
         scheduler.saveMeetingsToFile(MEETINGS_PATH);
     }
