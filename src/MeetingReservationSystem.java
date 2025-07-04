@@ -3,15 +3,20 @@ import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 import model.User;
+import model.Meeting;
 import service.Scheduler;
 
 public class MeetingReservationSystem {
-    
+
     private static final Scheduler scheduler = new Scheduler();
     private static final Scanner scanner = new Scanner(System.in);
     private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+    private static final String USERS_PATH = "src/db/users.csv";
+    private static final String MEETINGS_PATH = "src/db/meetings.csv";
 
     public static void main(String[] args) {
+        scheduler.loadUsersFromFile(USERS_PATH);
+        scheduler.loadMeetingsFromFile(MEETINGS_PATH);
         boolean running = true;
 
         while (running) {
@@ -49,8 +54,20 @@ public class MeetingReservationSystem {
         System.out.println("Enter user email: ");
         String email = scanner.nextLine();
 
+        if (name == null || name.isEmpty() || email == null || email.isEmpty()) {
+            System.out.println("Name and email cannot be empty");
+            return;
+        }
+
+        for (User user : scheduler.getAllUsers()) {
+            if (user.getEmail().equalsIgnoreCase(email)) {
+                System.out.println("A user with this email already exists!");
+            }
+        }
+
         User user = new User(name, email);
         scheduler.registerUser(user);
+        scheduler.saveUsersToFile(USERS_PATH);
         System.out.println("User " + user.getName() + " registered successfully! User ID: " + user.getId());
     }
 
@@ -63,12 +80,26 @@ public class MeetingReservationSystem {
         try {
             LocalDateTime slot = LocalDateTime.parse(slotStr, formatter);
             User user = scheduler.getUserById(userId);
-            if (user != null) {
-                user.addAvailability(slot);
-                System.out.println("Availability added!");
-            } else {
-                System.out.println("User not found");
+
+            if (user == null) {
+                System.out.println("User could not be found.");
+                return;
             }
+
+            if (slot.isBefore(LocalDateTime.now())) {
+                System.out.println("Cannot create a time slot in the past!");
+                return;
+            }
+
+            if (user.getAvailableSlots().contains(slot)) {
+                System.out.println("User has already reserved this slot!");
+                return;
+            }
+
+            user.addAvailability(slot);
+            scheduler.saveUsersToFile(USERS_PATH);
+            System.out.println("Availability added!");
+
         } catch (Exception e) {
             System.out.println("Invalid date format: " + e.getMessage());
         }
@@ -84,11 +115,49 @@ public class MeetingReservationSystem {
         System.out.println("Enter a meeting end time (yyyy-MM-dd HH:mm): ");
         String endTimeStr = scanner.nextLine();
 
+        if (hostId.equals(guestId)) {
+            System.out.println("Host and guest can't be the same");
+            return;
+        }
+
         try {
             LocalDateTime startTime = LocalDateTime.parse(startTimeStr, formatter);
             LocalDateTime endTime = LocalDateTime.parse(endTimeStr, formatter);
 
+            if (startTime.isAfter(endTime) || startTime.isEqual(endTime)) {
+                System.out.println("Start time must be before end time!");
+                return;
+            }
+
+            if (endTime.isBefore(startTime) || endTime.isEqual(startTime)) {
+                System.out.println("End time must be after start time!");
+                return;
+            }
+
+            User host = scheduler.getUserById(hostId);
+            User guest = scheduler.getUserById(guestId);
+
+            if (host == null || guest == null) {
+                System.out.println("Host or guest not found!");
+                return;
+            }
+
+            if (!host.getAvailableSlots().contains(startTime) || !guest.getAvailableSlots().contains(startTime)) {
+                System.out.println("One or both users not available at this time!");
+                return;
+            }
+
+            
+            List<Meeting> userMeetings = scheduler.listUserMeetings(hostId);
+            for (Meeting meeting : userMeetings) {
+                if (!(endTime.isBefore(meeting.getStartTime()) || startTime.isAfter(endTime))) {
+                    System.out.println("Host has a conflicting meeting");
+                    return;
+                }
+            }
+
             scheduler.scheduleMeeting(hostId, guestId, startTime, endTime);
+            scheduler.saveMeetingsToFile(MEETINGS_PATH);
             System.out.println("Scheduled meeting succesfully!");
         } catch (Exception e) {
             System.out.println("Invalid date format: " + e.getMessage());
@@ -99,7 +168,14 @@ public class MeetingReservationSystem {
         System.out.println("Enter the meeting id: ");
         String meetingId = scanner.nextLine();
 
+        Meeting meetingToCancel = scheduler.getMeetingById(meetingId);
+        if (meetingToCancel == null) {
+            System.out.println("Meeting not found!");
+            return;
+        }
+
         scheduler.cancelMeeting(meetingId);
+        scheduler.saveMeetingsToFile(MEETINGS_PATH);
     }
 
     private static void listUserMeetings() {
