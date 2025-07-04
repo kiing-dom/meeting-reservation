@@ -53,6 +53,17 @@ public class MeetingReservationSystem {
         System.out.println("Enter user email: ");
         String email = scanner.nextLine();
 
+        if (name == null || name.isEmpty() || email == null || email.isEmpty()) {
+            System.out.println("Name and email cannot be empty");
+            return;
+        }
+
+        for (User user: scheduler.getAllUsers()) {
+            if (user.getEmail().equalsIgnoreCase(email)) {
+                System.out.println("A user with this email already exists!");
+            }
+        }
+
         User user = new User(name, email);
         scheduler.registerUser(user);
         scheduler.saveUsersToFile(USERS_PATH);

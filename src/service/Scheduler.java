@@ -107,6 +107,10 @@ public class Scheduler {
         return users.get(userId);
     }
 
+    public List<User> getAllUsers() {
+        return new ArrayList<>(users.values());
+    }
+
     public void saveUsersToFile(String fileName) {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName))) {
             for (User user : users.values()) {
