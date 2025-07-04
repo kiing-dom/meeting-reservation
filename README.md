@@ -47,8 +47,8 @@ A robust Java-based CLI application for scheduling and managing 1:1 meetings, de
 5. List User Meetings
 6. Exit
 Select an option: 1
-Enter user name: Alice
-Enter user email: alice@example.com
+Enter user name: Dom
+Enter user email: dom@example.com
 User Alice registered successfully! User ID: 123e4567-e89b-12d3-a456-426614174000
 ```
 
