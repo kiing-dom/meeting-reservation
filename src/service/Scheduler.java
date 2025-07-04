@@ -11,8 +11,6 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.*;
 
-import javax.imageio.IIOException;
-
 public class Scheduler {
     private Map<String, User> users;
     private List<Meeting> meetings;

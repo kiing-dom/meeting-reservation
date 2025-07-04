@@ -3,6 +3,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 import model.User;
+import model.Meeting;
 import service.Scheduler;
 
 public class MeetingReservationSystem {
@@ -114,9 +115,46 @@ public class MeetingReservationSystem {
         System.out.println("Enter a meeting end time (yyyy-MM-dd HH:mm): ");
         String endTimeStr = scanner.nextLine();
 
+        if (hostId.equals(guestId)) {
+            System.out.println("Host and guest can't be the same");
+            return;
+        }
+
         try {
             LocalDateTime startTime = LocalDateTime.parse(startTimeStr, formatter);
             LocalDateTime endTime = LocalDateTime.parse(endTimeStr, formatter);
+
+            if (startTime.isAfter(endTime) || startTime.isEqual(endTime)) {
+                System.out.println("Start time must be before end time!");
+                return;
+            }
+
+            if (endTime.isBefore(startTime) || endTime.isEqual(startTime)) {
+                System.out.println("End time must be after start time!");
+                return;
+            }
+
+            User host = scheduler.getUserById(hostId);
+            User guest = scheduler.getUserById(guestId);
+
+            if (host == null || guest == null) {
+                System.out.println("Host or guest not found!");
+                return;
+            }
+
+            if (!host.getAvailableSlots().contains(startTime) || !guest.getAvailableSlots().contains(startTime)) {
+                System.out.println("One or both users not available at this time!");
+                return;
+            }
+
+            
+            List<Meeting> userMeetings = scheduler.listUserMeetings(hostId);
+            for (Meeting meeting : userMeetings) {
+                if (!(endTime.isBefore(meeting.getStartTime()) || startTime.isAfter(endTime))) {
+                    System.out.println("Host has a conflicting meeting");
+                    return;
+                }
+            }
 
             scheduler.scheduleMeeting(hostId, guestId, startTime, endTime);
             scheduler.saveMeetingsToFile(MEETINGS_PATH);
