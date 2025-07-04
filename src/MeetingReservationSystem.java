@@ -58,7 +58,7 @@ public class MeetingReservationSystem {
             return;
         }
 
-        for (User user: scheduler.getAllUsers()) {
+        for (User user : scheduler.getAllUsers()) {
             if (user.getEmail().equalsIgnoreCase(email)) {
                 System.out.println("A user with this email already exists!");
             }
@@ -79,13 +79,26 @@ public class MeetingReservationSystem {
         try {
             LocalDateTime slot = LocalDateTime.parse(slotStr, formatter);
             User user = scheduler.getUserById(userId);
-            if (user != null) {
-                user.addAvailability(slot);
-                scheduler.saveUsersToFile(USERS_PATH);
-                System.out.println("Availability added!");
-            } else {
-                System.out.println("User not found");
+
+            if (user == null) {
+                System.out.println("User could not be found.");
+                return;
             }
+
+            if (slot.isBefore(LocalDateTime.now())) {
+                System.out.println("Cannot create a time slot in the past!");
+                return;
+            }
+
+            if (user.getAvailableSlots().contains(slot)) {
+                System.out.println("User has already reserved this slot!");
+                return;
+            }
+
+            user.addAvailability(slot);
+            scheduler.saveUsersToFile(USERS_PATH);
+            System.out.println("Availability added!");
+
         } catch (Exception e) {
             System.out.println("Invalid date format: " + e.getMessage());
         }
