@@ -1,7 +1,6 @@
-package service;
+package com.dngi.meeting_reservation.service;
 
-import model.Meeting;
-import model.User;
+import com.dngi.meeting_reservation.model.*;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -11,6 +10,9 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.*;
 
+import org.springframework.stereotype.Service;
+
+@Service
 public class Scheduler {
     private Map<String, User> users;
     private List<Meeting> meetings;
