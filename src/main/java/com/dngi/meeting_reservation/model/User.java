@@ -1,4 +1,4 @@
-package model;
+package com.dngi.meeting_reservation.model;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
