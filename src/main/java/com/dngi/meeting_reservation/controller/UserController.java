@@ -2,6 +2,7 @@ package com.dngi.meeting_reservation.controller;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,6 +21,9 @@ public class UserController {
 
     @PostMapping
     public ResponseEntity<String> registerUser(@RequestBody User user) {
+        if (user.getId() == null || user.getId().isEmpty()) {
+            user.setId(UUID.randomUUID().toString());
+        }
         scheduler.registerUser(user);
         return ResponseEntity.ok("User Registered successfully with ID: " + user.getId());
     }
