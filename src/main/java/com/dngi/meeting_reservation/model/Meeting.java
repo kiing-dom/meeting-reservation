@@ -1,13 +1,30 @@
 package com.dngi.meeting_reservation.model;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 public class Meeting {
-    private final String id;
+    private String id;
     private User host;
     private User guest;
     private LocalDateTime startTime;
     private LocalDateTime endTime;
+
+    public Meeting() {
+        this.id = null;
+        this.host = null;
+        this.guest = null;
+        this.startTime = null;
+        this.endTime = null;
+    }
+
+    public Meeting(User host, User guest, LocalDateTime startTime, LocalDateTime endTime) {
+        this.id = UUID.randomUUID().toString();
+        this.host = host;
+        this.guest = guest;
+        this.startTime = startTime;
+        this.endTime = endTime;
+    }
 
     public Meeting(String id, User host, User guest, LocalDateTime startTime, LocalDateTime endTime) {
         this.id = id;
@@ -19,6 +36,10 @@ public class Meeting {
 
     public String getId() {
         return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public User getHost() {
